@@ -1,7 +1,8 @@
 '''
 This program converts the keybaord audio samples provided in /dataset into (x) individual samples labelled (x)_1, (x)_2 and so forth.
 This is achieved by utilising librosa's in-built onset_function which detects peaks by thresholding it's normalised power and backtracks
-said peaks to the previous local minima. We then take a 0.33s snapshot from that point and define that to be our sample.
+these peaks to the previous local minima. We then take a 0.33s snapshot from that point and define that to be our sample. We repeat this process
+for every .wav file located in /dataset and save the resultant waveforms in /output.
 
 '''
 
