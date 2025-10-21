@@ -1,6 +1,6 @@
 ---
 title: Segmentation Methodology
-layout: template
+layout: default
 filename: segmentation.md
 --- 
 

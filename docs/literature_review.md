@@ -1,6 +1,6 @@
 ---
 title: Literature Review
-layout: template
+layout: default
 filename: literature_review.md
 --- 
 

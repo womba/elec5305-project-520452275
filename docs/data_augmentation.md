@@ -1,6 +1,6 @@
 ---
 title: Data Augmentation
-layout: template
+layout: default
 filename: feature_extration.md
 --- 
 

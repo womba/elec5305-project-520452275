@@ -1,6 +1,6 @@
 ---
 title: Project Proposal
-layout: template
+layout: default
 filename: proposal.md
 --- 
 
