@@ -12,11 +12,11 @@ import numpy as np
 import soundfile as sf
 import os
 
-path = "dataset"
+path = "dataset/Testing"
 files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
 for file in files:
-    filename = f"dataset/{file}"
+    filename = f"dataset/Testing/{file}"
     y, sr = librosa.load(filename, sr=48000, mono=True)
 
     D = np.abs(librosa.stft(y))
@@ -24,21 +24,50 @@ for file in files:
     onset_envelope = librosa.onset.onset_strength(y=y, sr=sr)
     onset_times = librosa.times_like(onset_envelope, sr=sr)
 
-    onset_frames = librosa.onset.onset_detect(onset_envelope=onset_envelope, hop_length=512, backtrack=True, sr=sr, wait=10)
+    onset_frames = librosa.onset.onset_detect(onset_envelope=onset_envelope, hop_length=512, backtrack=True, sr=sr, wait=20)
     onset_samples = librosa.frames_to_samples(onset_frames, hop_length=512)
 
-    for i in range(len(onset_samples)):
+    for i in range(len(onset_samples)-1):
         onset_samples[i] += 48000/3
         post_onset_frames = librosa.samples_to_frames(onset_samples, hop_length=512)
 
-    for i in range(0, len(onset_samples)):
-        start = librosa.frames_to_samples(onset_frames[i], hop_length=512)
-        end = librosa.frames_to_samples(post_onset_frames[i], hop_length=512)
-        sample = y[start:end]
+    fig, ax = plt.subplots(nrows=2, sharex=True)
 
-        path = f"output/{file[0]}_{i}.wav"
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        sf.write(path, sample, 48000, subtype='PCM_24', format='wav')
+    librosa.display.specshow(librosa.amplitude_to_db(D, ref=np.max), x_axis='time', y_axis='log', ax=ax[0], sr=sr)
+    ax[0].set(title='Power spectrogram')
+    ax[0].label_outer()
+
+    ax[1].plot(onset_times, onset_envelope, label="Onset Strength")
+    ax[1].vlines(onset_times[onset_frames], 0, onset_envelope.max(), color='r', alpha=0.9, linestyle='--', label='Onsets')
+    ax[1].vlines(onset_times[post_onset_frames], 0, onset_envelope.max(), color='g', alpha=0.9, linestyle='--', label='Onsets-Post')
+    ax[1].legend()
+
+    fig, ax = plt.subplots(nrows=len(onset_samples)*2, sharex=True)
+
+    plt.show()
+
+    break
+
+    # UNCOMMENT TO GENERATE SAMPLES
+    # for i in range(0, len(onset_samples)):
+    #     start = librosa.frames_to_samples(onset_frames[i], hop_length=512)
+    #     end = librosa.frames_to_samples(post_onset_frames[i], hop_length=512)
+    #     sample = y[start:end]
+
+    #     if len(sample) > 0:
+    #         rms = np.sqrt(np.mean(sample ** 2))
+    #     else:
+    #         rms = 0.0
+    #     target_rms = 0.1
+    #     if rms > 0:
+    #         sample = sample * (target_rms / rms)
+
+    #     path = f"dataset/testing/testing_output/{file[0].upper()}_{i}.wav"
+    #     os.makedirs(os.path.dirname(path), exist_ok=True)
+    #     sf.write(path, sample, 48000, subtype='PCM_24', format='wav')
+
+
+
 
 
 # filename = "dataset/0.wav"
